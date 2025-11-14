@@ -65,7 +65,7 @@ node setup-db.js
 ### 2. Start Backend
 ```powershell
 npm start
-# Runs on http://localhost:5000
+# Runs on http://10.30.10.3:5000
 ```
 
 ### 3. Start Frontend (in new terminal)

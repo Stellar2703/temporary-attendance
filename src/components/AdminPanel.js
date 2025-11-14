@@ -17,7 +17,7 @@ const AdminPanel = ({ onLogout }) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/admin/attendance/${selectedDate}`
+        `http://10.30.10.3:5000/api/admin/attendance/${selectedDate}`
       );
       setAttendanceData(response.data.data);
       setSummary(response.data.summary);
@@ -32,7 +32,7 @@ const AdminPanel = ({ onLogout }) => {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/attendance/${id}`, {
+      await axios.put(`http://10.30.10.3:5000/api/admin/attendance/${id}`, {
         status: newStatus,
       });
 

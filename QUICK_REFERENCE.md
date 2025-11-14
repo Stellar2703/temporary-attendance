@@ -126,7 +126,7 @@ id | username | password | created_at
 | Service | URL |
 |---------|-----|
 | Frontend | http://localhost:3000 |
-| Backend API | http://localhost:5000/ |
+| Backend API | http://10.30.10.3:5000/ |
 | Student Form | http://localhost:3000 |
 | Admin Login | http://localhost:3000 (click link) |
 | Admin Dashboard | http://localhost:3000 (after login) |

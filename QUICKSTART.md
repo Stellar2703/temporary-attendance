@@ -111,7 +111,7 @@ npm start
 
 ### Student Check-in
 ```bash
-POST http://localhost:5000/api/checkin
+POST http://10.30.10.3:5000/api/checkin
 Content-Type: application/json
 
 {
@@ -122,7 +122,7 @@ Content-Type: application/json
 
 ### Admin Login
 ```bash
-POST http://localhost:5000/api/admin/login
+POST http://10.30.10.3:5000/api/admin/login
 Content-Type: application/json
 
 {
@@ -133,12 +133,12 @@ Content-Type: application/json
 
 ### View Today's Attendance
 ```bash
-GET http://localhost:5000/api/admin/attendance
+GET http://10.30.10.3:5000/api/admin/attendance
 ```
 
 ### View Attendance by Date
 ```bash
-GET http://localhost:5000/api/admin/attendance/2025-11-12
+GET http://10.30.10.3:5000/api/admin/attendance/2025-11-12
 ```
 
 ## Next Steps

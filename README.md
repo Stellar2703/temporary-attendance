@@ -106,7 +106,7 @@ attendance/
    npm run dev
    ```
 
-   The server will run on `http://localhost:5000/`
+   The server will run on `http://10.30.10.3:5000/`
 
 ### 3. Frontend Setup
 

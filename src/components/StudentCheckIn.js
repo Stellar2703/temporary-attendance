@@ -47,7 +47,7 @@ const StudentCheckIn = ({ onAdminClick }) => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/checkin', {
+      const response = await axios.post('http://10.30.10.3:5000/api/checkin', {
         phone_number: phoneNumber,
         name: name || 'Student',
       });
