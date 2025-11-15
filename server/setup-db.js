@@ -27,14 +27,17 @@ async function setupDatabase() {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS students (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        registration_id VARCHAR(20) UNIQUE NOT NULL,
         phone_number VARCHAR(15) UNIQUE NOT NULL,
-        name VARCHAR(100),
+        name VARCHAR(100) NOT NULL,
+        college_name VARCHAR(100) NOT NULL,
         date_recorded DATE NOT NULL,
         time_recorded TIME NOT NULL,
         status ENUM('present', 'absent') DEFAULT 'present',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         INDEX idx_phone (phone_number),
-        INDEX idx_date (date_recorded)
+        INDEX idx_date (date_recorded),
+        INDEX idx_registration (registration_id)
       )
     `);
     console.log('✓ Students table created');

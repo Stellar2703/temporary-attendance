@@ -10,14 +10,14 @@ const AdminPanel = ({ onLogout }) => {
   const [summary, setSummary] = useState({ total: 0, present: 0, absent: 0 });
 
   useEffect(() => {
-    fetchAttendance();
-  }, [selectedDate]);
+    fetchAllAttendance();
+  }, []);
 
-  const fetchAttendance = async () => {
+  const fetchAllAttendance = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://10.30.10.3:5000/api/admin/attendance/${selectedDate}`
+        `${process.env.REACT_APP_API_URL}/admin/attendance`
       );
       setAttendanceData(response.data.data);
       setSummary(response.data.summary);
@@ -30,9 +30,13 @@ const AdminPanel = ({ onLogout }) => {
     }
   };
 
+  const fetchAttendance = async () => {
+    fetchAllAttendance();
+  };
+
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await axios.put(`http://10.30.10.3:5000/api/admin/attendance/${id}`, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/admin/attendance/${id}`, {
         status: newStatus,
       });
 
@@ -56,10 +60,12 @@ const AdminPanel = ({ onLogout }) => {
 
   const handleExport = () => {
     // Create CSV content
-    const headers = ['Phone Number', 'Name', 'Time', 'Status'];
+    const headers = ['Registration ID', 'Phone Number', 'Name', 'College Name', 'Time', 'Status'];
     const rows = attendanceData.map((item) => [
+      item.registration_id,
       item.phone_number,
       item.name,
+      item.college_name,
       item.time_recorded,
       item.status,
     ]);
@@ -74,14 +80,14 @@ const AdminPanel = ({ onLogout }) => {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `attendance-${selectedDate}.csv`;
+    link.download = `attendance-all-dates.csv`;
     link.click();
   };
 
   return (
     <div className="admin-panel-container">
       <div className="admin-header">
-        <h2>📊 Attendance Dashboard</h2>
+        <h2>📊 Event Attendance Dashboard</h2>
       </div>
 
       {/* Summary Cards */}
@@ -100,16 +106,11 @@ const AdminPanel = ({ onLogout }) => {
         </div>
       </div>
 
-      {/* Date Filter */}
+      {/* Refresh and Export Controls */}
       <div className="date-filter">
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-        />
-        <button onClick={fetchAttendance}>Refresh</button>
+        <button onClick={fetchAttendance}>🔄 Refresh</button>
         <button onClick={handleExport} style={{ marginLeft: 'auto' }}>
-          📥 Export CSV
+          📥 Export CSV (All)
         </button>
       </div>
 
@@ -117,13 +118,15 @@ const AdminPanel = ({ onLogout }) => {
       {loading ? (
         <div className="loading">Loading attendance data...</div>
       ) : attendanceData.length === 0 ? (
-        <div className="no-data">No attendance records for this date</div>
+        <div className="no-data">No attendance records found</div>
       ) : (
         <table className="attendance-table">
           <thead>
             <tr>
+              <th>Registration ID</th>
               <th>Phone Number</th>
               <th>Name</th>
+              <th>College Name</th>
               <th>Time</th>
               <th>Status</th>
             </tr>
@@ -131,8 +134,10 @@ const AdminPanel = ({ onLogout }) => {
           <tbody>
             {attendanceData.map((item) => (
               <tr key={item.id}>
+                <td className="registration-id-cell">{item.registration_id}</td>
                 <td>{item.phone_number}</td>
                 <td>{item.name}</td>
+                <td>{item.college_name}</td>
                 <td>{item.time_recorded}</td>
                 <td>
                   <div

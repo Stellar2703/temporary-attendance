@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const AdminLogin = ({ onLoginSuccess }) => {
+const AdminLogin = ({ onLoginSuccess, onBackToStudent }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ const AdminLogin = ({ onLoginSuccess }) => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://10.30.10.3:5000/api/admin/login', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/admin/login`, {
         username,
         password,
       });
@@ -34,6 +34,9 @@ const AdminLogin = ({ onLoginSuccess }) => {
 
   return (
     <div className="admin-login-container">
+      <a href="#" onClick={(e) => { e.preventDefault(); onBackToStudent(); }} className="back-link">
+        ← Back to Student Login
+      </a>
       <h2>Admin Login</h2>
 
       {error && <div className="error-message">{error}</div>}
@@ -68,13 +71,7 @@ const AdminLogin = ({ onLoginSuccess }) => {
         </button>
       </form>
 
-      <div style={{ marginTop: '1rem' }}>
-        <p style={{ fontSize: '0.9rem', color: '#999' }}>
-          Default credentials:<br/>
-          Username: admin<br/>
-          Password: admin123
-        </p>
-      </div>
+    
     </div>
   );
 };

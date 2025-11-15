@@ -5,10 +5,12 @@ import SuccessModal from './SuccessModal';
 const StudentCheckIn = ({ onAdminClick }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [name, setName] = useState('');
+  const [collegeName, setCollegeName] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [registrationId, setRegistrationId] = useState('');
 
   // Auto-redirect after success
   useEffect(() => {
@@ -44,24 +46,45 @@ const StudentCheckIn = ({ onAdminClick }) => {
       return;
     }
 
+    // Validate name
+    if (!name.trim()) {
+      setMessageType('error');
+      setMessage('Please enter your name');
+      return;
+    }
+
+    // Validate college name
+    if (!collegeName.trim()) {
+      setMessageType('error');
+      setMessage('Please enter your college name');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await axios.post('http://10.30.10.3:5000/api/checkin', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/checkin`, {
         phone_number: phoneNumber,
-        name: name || 'Student',
+        name: name,
+        college_name: collegeName,
       });
 
       // Show success modal instead of just a message
       setShowSuccessModal(true);
+      setRegistrationId(response.data.registration_id);
       setMessageType('success');
       setMessage(response.data.message);
       setPhoneNumber('');
       setName('');
+      setCollegeName('');
     } catch (error) {
       if (error.response?.status === 409) {
         setMessageType('info');
-        setMessage(error.response.data.message);
+        const regId = error.response.data.data?.registration_id;
+        const msg = regId 
+          ? `${error.response.data.message} (ID: ${regId})`
+          : error.response.data.message;
+        setMessage(msg);
       } else {
         setMessageType('error');
         setMessage(error.response?.data?.error || 'Error marking attendance. Please try again.');
@@ -73,15 +96,19 @@ const StudentCheckIn = ({ onAdminClick }) => {
 
   return (
     <div className="student-form-container">
-      <SuccessModal isVisible={showSuccessModal} phoneNumber={phoneNumber} />
+      <SuccessModal isVisible={showSuccessModal} phoneNumber={phoneNumber} registrationId={registrationId} />
 
-      <h2>� Event Registration</h2>
+      <h2> Event Registration</h2>
 
       {message && !showSuccessModal && (
         <div className={`${messageType}-message`}>
           {message}
         </div>
       )}
+
+      <div className="certificate-note">
+        ⚠️ Please fill the details properly. This information will be used for certificate printing.
+      </div>
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -104,7 +131,7 @@ const StudentCheckIn = ({ onAdminClick }) => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="name">Name (Optional)</label>
+          <label htmlFor="name">Name *</label>
           <input
             id="name"
             type="text"
@@ -112,6 +139,20 @@ const StudentCheckIn = ({ onAdminClick }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={loading}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="college">College Name *</label>
+          <input
+            id="college"
+            type="text"
+            placeholder="Enter your college name"
+            value={collegeName}
+            onChange={(e) => setCollegeName(e.target.value)}
+            disabled={loading}
+            required
           />
         </div>
 

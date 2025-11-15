@@ -32,6 +32,7 @@ async function initializeDatabase() {
         id INT AUTO_INCREMENT PRIMARY KEY,
         phone_number VARCHAR(15) UNIQUE NOT NULL,
         name VARCHAR(100),
+        college_name VARCHAR(100),
         date_recorded DATE NOT NULL,
         time_recorded TIME NOT NULL,
         status ENUM('present', 'absent') DEFAULT 'present',
@@ -78,10 +79,18 @@ async function initializeDatabase() {
 // Student check-in
 app.post('/api/checkin', async (req, res) => {
   try {
-    const { phone_number, name } = req.body;
+    const { phone_number, name, college_name } = req.body;
 
     if (!phone_number) {
       return res.status(400).json({ error: 'Phone number is required' });
+    }
+
+    if (!name) {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+
+    if (!college_name) {
+      return res.status(400).json({ error: 'College name is required' });
     }
 
     // Validate phone number: must be exactly 10 digits
@@ -98,23 +107,37 @@ app.post('/api/checkin', async (req, res) => {
     );
 
     if (existing.length > 0) {
+      // Update existing record to mark as present
+      await connection.query(
+        'UPDATE students SET status = ? WHERE id = ?',
+        ['present', existing[0].id]
+      );
       connection.release();
-      return res.status(409).json({ 
-        message: 'Already marked as present today',
-        data: existing[0]
+      return res.json({ 
+        message: 'Attendance marked as present',
+        phone_number,
+        registration_id: existing[0].registration_id
       });
     }
 
+    // Generate unique sequential registration ID (format: AICTE-001, AICTE-002, etc.)
+    const [countResult] = await connection.query(
+      'SELECT COUNT(*) as count FROM students'
+    );
+    const nextNumber = countResult[0].count + 1;
+    const registration_id = `AICTE-${String(nextNumber).padStart(3, '0')}`;
+
     // Insert new attendance with current date and time
-    await connection.query(
-      'INSERT INTO students (phone_number, name, date_recorded, time_recorded, status) VALUES (?, ?, CURDATE(), CURTIME(), ?)',
-      [phone_number, name || 'Unknown', 'present']
+    const [result] = await connection.query(
+      'INSERT INTO students (registration_id, phone_number, name, college_name, date_recorded, time_recorded, status) VALUES (?, ?, ?, ?, CURDATE(), CURTIME(), ?)',
+      [registration_id, phone_number, name, college_name, 'present']
     );
 
     connection.release();
     res.json({ 
-      message: 'Successfully marked as present',
-      phone_number 
+      message: 'Successfully registered',
+      phone_number,
+      registration_id 
     });
   } catch (error) {
     console.error('Check-in error:', error);
@@ -163,13 +186,13 @@ app.post('/api/admin/login', async (req, res) => {
   }
 });
 
-// Get attendance data
+// Get attendance data (all dates)
 app.get('/api/admin/attendance', async (req, res) => {
   try {
     const connection = await pool.getConnection();
 
     const [students] = await connection.query(
-      'SELECT * FROM students WHERE DATE(date_recorded) = CURDATE() ORDER BY time_recorded DESC'
+      'SELECT * FROM students ORDER BY date_recorded DESC, time_recorded DESC'
     );
 
     // Get summary

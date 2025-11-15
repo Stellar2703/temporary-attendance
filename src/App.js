@@ -34,13 +34,13 @@ function App() {
         <div className="header-content">
           <div className="logos-container">
             <img 
-              src="/All_India_Council_for_Technical_Education_logo.png" 
-              alt="AICTE Logo" 
+              src="/Bannari_Amman_Institute_of_Technology_logo.png" 
+              alt="BAIT Logo" 
               className="header-logo"
             />
             <img 
-              src="/Bannari_Amman_Institute_of_Technology_logo.png" 
-              alt="BAIT Logo" 
+              src="/All_India_Council_for_Technical_Education_logo.png" 
+              alt="AICTE Logo" 
               className="header-logo"
             />
           </div>
@@ -53,10 +53,8 @@ function App() {
 
       <nav className="navbar">
         <div className="nav-container">
-          <h1 className="nav-title">
-            Event Registration
-            <span className="nav-date">Tuesday - 18 November 2025</span>
-          </h1>
+          {/* <h1 className="nav-title">Event Registration</h1> */}
+          <span className="nav-date">Tuesday - 18 November 2025</span>
           {isAdminLoggedIn && (
             <button className="logout-btn" onClick={handleAdminLogout}>
               Logout
@@ -65,13 +63,13 @@ function App() {
         </div>
       </nav>
 
-      <div className="container">
+      <div className={`container ${isAdminLoggedIn ? 'admin-container' : ''}`}>
         {!isAdminLoggedIn ? (
           <>
             {currentPage === 'student' ? (
               <StudentCheckIn onAdminClick={() => setCurrentPage('login')} />
             ) : (
-              <AdminLogin onLoginSuccess={handleAdminLogin} />
+              <AdminLogin onLoginSuccess={handleAdminLogin} onBackToStudent={() => setCurrentPage('student')} />
             )}
           </>
         ) : (
