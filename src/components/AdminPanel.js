@@ -60,14 +60,14 @@ const AdminPanel = ({ onLogout }) => {
 
   const handleExport = () => {
     // Create CSV content
-    const headers = ['Registration ID', 'Phone Number', 'Name', 'College Name', 'Title', 'Category', 'Time', 'Status'];
+    const headers = ['Registration ID', 'Phone Number', 'Title', 'Name', 'Category', 'College Name', 'Time', 'Status'];
     const rows = attendanceData.map((item) => [
       item.registration_id,
       item.phone_number,
-      item.name,
-      item.college_name,
       item.title,
+      item.name,
       item.category,
+      item.college_name,
       item.time_recorded,
       item.status,
     ]);
@@ -127,10 +127,10 @@ const AdminPanel = ({ onLogout }) => {
             <tr>
               <th>Registration ID</th>
               <th>Phone Number</th>
-              <th>Name</th>
-              <th>College Name</th>
               <th>Title</th>
+              <th>Name</th>
               <th>Category</th>
+              <th>College Name</th>
               <th>Time</th>
               <th>Status</th>
             </tr>
@@ -140,10 +140,10 @@ const AdminPanel = ({ onLogout }) => {
               <tr key={item.id}>
                 <td className="registration-id-cell">{item.registration_id}</td>
                 <td>{item.phone_number}</td>
-                <td>{item.name}</td>
-                <td>{item.college_name}</td>
                 <td>{item.title}</td>
+                <td>{item.name}</td>
                 <td>{item.category}</td>
+                <td>{item.college_name}</td>
                 <td>{item.time_recorded}</td>
                 <td>
                   <div

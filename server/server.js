@@ -108,21 +108,21 @@ app.post('/api/checkin', async (req, res) => {
 
     const connection = await pool.getConnection();
 
-    // Check if already marked present today
+    // Check if phone number already exists (regardless of date)
     const [existing] = await connection.query(
-      'SELECT * FROM students WHERE phone_number = ? AND DATE(date_recorded) = CURDATE()',
+      'SELECT * FROM students WHERE phone_number = ?',
       [phone_number]
     );
 
     if (existing.length > 0) {
-      // Update existing record to mark as present
+      // Update existing record with new data and mark as present
       await connection.query(
-        'UPDATE students SET status = ? WHERE id = ?',
-        ['present', existing[0].id]
+        'UPDATE students SET name = ?, college_name = ?, title = ?, category = ?, status = ?, time_recorded = CURTIME(), date_recorded = CURDATE() WHERE id = ?',
+        [name, college_name, title, category, 'present', existing[0].id]
       );
       connection.release();
       return res.json({ 
-        message: 'Attendance marked as present',
+        message: 'Record updated and attendance marked as present',
         phone_number,
         registration_id: existing[0].registration_id
       });

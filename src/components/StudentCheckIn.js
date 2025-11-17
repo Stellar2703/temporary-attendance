@@ -144,32 +144,6 @@ const StudentCheckIn = ({ onAdminClick }) => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="name">Name *</label>
-          <input
-            id="name"
-            type="text"
-            placeholder="Enter your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            disabled={loading}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="college">College Name *</label>
-          <input
-            id="college"
-            type="text"
-            placeholder="Enter your college name"
-            value={collegeName}
-            onChange={(e) => setCollegeName(e.target.value)}
-            disabled={loading}
-            required
-          />
-        </div>
-
-        <div className="form-group">
           <label htmlFor="title">Title *</label>
           <select
             id="title"
@@ -188,6 +162,19 @@ const StudentCheckIn = ({ onAdminClick }) => {
         </div>
 
         <div className="form-group">
+          <label htmlFor="name">Name *</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            disabled={loading}
+            required
+          />
+        </div>
+
+        <div className="form-group">
           <label htmlFor="category">Category *</label>
           <select
             id="category"
@@ -203,6 +190,19 @@ const StudentCheckIn = ({ onAdminClick }) => {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="college">College Name *</label>
+          <input
+            id="college"
+            type="text"
+            placeholder="Enter your college name"
+            value={collegeName}
+            onChange={(e) => setCollegeName(e.target.value)}
+            disabled={loading}
+            required
+          />
         </div>
 
         <button type="submit" className="submit-btn" disabled={loading}>
