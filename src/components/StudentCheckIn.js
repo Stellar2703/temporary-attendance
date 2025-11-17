@@ -6,21 +6,16 @@ const StudentCheckIn = ({ onAdminClick }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [name, setName] = useState('');
   const [collegeName, setCollegeName] = useState('');
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [registrationId, setRegistrationId] = useState('');
 
-  // Auto-redirect after success
-  useEffect(() => {
-    if (showSuccessModal) {
-      const timer = setTimeout(() => {
-        window.location.href = 'https://www.bitsathy.ac.in';
-      }, 3000); // 3 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [showSuccessModal]);
+  const titleOptions = ['Dr.', 'Mr.', 'Ms.', 'Mrs.'];
+  const categoryOptions = ['Student', 'Faculty', 'Industry'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,6 +55,20 @@ const StudentCheckIn = ({ onAdminClick }) => {
       return;
     }
 
+    // Validate title
+    if (!title) {
+      setMessageType('error');
+      setMessage('Please select your title');
+      return;
+    }
+
+    // Validate category
+    if (!category) {
+      setMessageType('error');
+      setMessage('Please select your category');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -67,9 +76,11 @@ const StudentCheckIn = ({ onAdminClick }) => {
         phone_number: phoneNumber,
         name: name,
         college_name: collegeName,
+        title: title,
+        category: category,
       });
 
-      // Show success modal instead of just a message
+      // Show success modal
       setShowSuccessModal(true);
       setRegistrationId(response.data.registration_id);
       setMessageType('success');
@@ -77,6 +88,8 @@ const StudentCheckIn = ({ onAdminClick }) => {
       setPhoneNumber('');
       setName('');
       setCollegeName('');
+      setTitle('');
+      setCategory('');
     } catch (error) {
       if (error.response?.status === 409) {
         setMessageType('info');
@@ -154,6 +167,42 @@ const StudentCheckIn = ({ onAdminClick }) => {
             disabled={loading}
             required
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="title">Title *</label>
+          <select
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            disabled={loading}
+            required
+          >
+            <option value="">Select Title</option>
+            {titleOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="category">Category *</label>
+          <select
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            disabled={loading}
+            required
+          >
+            <option value="">Select Category</option>
+            {categoryOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
         </div>
 
         <button type="submit" className="submit-btn" disabled={loading}>

@@ -31,13 +31,16 @@ async function setupDatabase() {
         phone_number VARCHAR(15) UNIQUE NOT NULL,
         name VARCHAR(100) NOT NULL,
         college_name VARCHAR(100) NOT NULL,
+        title VARCHAR(20) NOT NULL,
+        category VARCHAR(50) NOT NULL,
         date_recorded DATE NOT NULL,
         time_recorded TIME NOT NULL,
         status ENUM('present', 'absent') DEFAULT 'present',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         INDEX idx_phone (phone_number),
         INDEX idx_date (date_recorded),
-        INDEX idx_registration (registration_id)
+        INDEX idx_registration (registration_id),
+        INDEX idx_category (category)
       )
     `);
     console.log('✓ Students table created');

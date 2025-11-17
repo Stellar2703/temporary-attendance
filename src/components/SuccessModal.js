@@ -20,7 +20,6 @@ function SuccessModal({ isVisible, phoneNumber, registrationId }) {
         {phoneNumber && (
           <p className="success-phone">Phone: {phoneNumber}</p>
         )}
-        <p className="success-redirect">Redirecting in 3 seconds...</p>
       </div>
     </div>
   );

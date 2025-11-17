@@ -60,12 +60,14 @@ const AdminPanel = ({ onLogout }) => {
 
   const handleExport = () => {
     // Create CSV content
-    const headers = ['Registration ID', 'Phone Number', 'Name', 'College Name', 'Time', 'Status'];
+    const headers = ['Registration ID', 'Phone Number', 'Name', 'College Name', 'Title', 'Category', 'Time', 'Status'];
     const rows = attendanceData.map((item) => [
       item.registration_id,
       item.phone_number,
       item.name,
       item.college_name,
+      item.title,
+      item.category,
       item.time_recorded,
       item.status,
     ]);
@@ -127,6 +129,8 @@ const AdminPanel = ({ onLogout }) => {
               <th>Phone Number</th>
               <th>Name</th>
               <th>College Name</th>
+              <th>Title</th>
+              <th>Category</th>
               <th>Time</th>
               <th>Status</th>
             </tr>
@@ -138,6 +142,8 @@ const AdminPanel = ({ onLogout }) => {
                 <td>{item.phone_number}</td>
                 <td>{item.name}</td>
                 <td>{item.college_name}</td>
+                <td>{item.title}</td>
+                <td>{item.category}</td>
                 <td>{item.time_recorded}</td>
                 <td>
                   <div

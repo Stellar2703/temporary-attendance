@@ -79,7 +79,7 @@ async function initializeDatabase() {
 // Student check-in
 app.post('/api/checkin', async (req, res) => {
   try {
-    const { phone_number, name, college_name } = req.body;
+    const { phone_number, name, college_name, title, category } = req.body;
 
     if (!phone_number) {
       return res.status(400).json({ error: 'Phone number is required' });
@@ -91,6 +91,14 @@ app.post('/api/checkin', async (req, res) => {
 
     if (!college_name) {
       return res.status(400).json({ error: 'College name is required' });
+    }
+
+    if (!title) {
+      return res.status(400).json({ error: 'Title is required' });
+    }
+
+    if (!category) {
+      return res.status(400).json({ error: 'Category is required' });
     }
 
     // Validate phone number: must be exactly 10 digits
@@ -129,8 +137,8 @@ app.post('/api/checkin', async (req, res) => {
 
     // Insert new attendance with current date and time
     const [result] = await connection.query(
-      'INSERT INTO students (registration_id, phone_number, name, college_name, date_recorded, time_recorded, status) VALUES (?, ?, ?, ?, CURDATE(), CURTIME(), ?)',
-      [registration_id, phone_number, name, college_name, 'present']
+      'INSERT INTO students (registration_id, phone_number, name, college_name, title, category, date_recorded, time_recorded, status) VALUES (?, ?, ?, ?, ?, ?, CURDATE(), CURTIME(), ?)',
+      [registration_id, phone_number, name, college_name, title, category, 'present']
     );
 
     connection.release();
